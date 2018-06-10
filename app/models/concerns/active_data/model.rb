@@ -48,6 +48,15 @@ module ActiveData
       update("#{attribute}": value)
     end
 
+    def destroy
+      @destroyed = true if self.class.dataset.remove(self)
+      self
+    end
+
+    def destroyed?
+      @destroyed
+    end
+
     def where(options = {})
       select do |instance|
         if options.is_a?(Hash)

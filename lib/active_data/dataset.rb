@@ -45,6 +45,17 @@ module ActiveData
       write_data(data)
     end
 
+    def remove(instance)
+      return false if instance.id.nil?
+      data = read_data
+      if instance.class.explicit_ids?
+        data.select { |obj| obj[:id] == instance.id }.first = nil
+      else
+        data[instance.id - 1] = nil
+      end
+      write_data(data.compact)
+    end
+
     def write_data(data)
       File.open(file_path, 'w') do |f|
         f.write(data.to_json)
