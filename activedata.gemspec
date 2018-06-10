@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 2.3'
 
   gem.add_dependency 'railties', '~> 5.2'
+  gem.add_dependency 'activesupprt', '~> 5.2'
   gem.add_dependency 'activemodel', '~> 5.2'
 
   gem.add_development_dependency 'rspec', '~> 3.7'
