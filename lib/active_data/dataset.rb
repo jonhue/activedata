@@ -1,3 +1,4 @@
+require 'json'
 require 'active_support'
 
 module ActiveData
@@ -17,6 +18,7 @@ module ActiveData
         object[:id] = index unless object.key?(:id)
         instances << @c.new(object)
       end
+      instances
     end
 
     def read_data
@@ -40,11 +42,14 @@ module ActiveData
         end
       end
       self.class.permit_attributes.each { |attribute| object[attribute] = instance.send(attribute) }
-      return true if write_data(data)
-      false
+      write_data(data)
     end
 
     def write_data(data)
+      File.open(file_path, 'w') do |f|
+        f.write(data.to_json)
+      end
+      true
     end
 
     private
