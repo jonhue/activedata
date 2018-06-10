@@ -4,6 +4,7 @@ require 'active_data/version'
 module ActiveData
   extend ActiveSupport::Autoload
 
+  autoload :Data
   autoload :Load
   autoload :Model
 
