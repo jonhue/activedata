@@ -66,12 +66,12 @@ module ActiveData
     private
 
     def permitted_attributes
-      return nil unless @c.permit_attributes
+      return [] unless @c.permit_attributes
       @c.permit_attributes
     end
 
     def attribute_permitted?(attribute)
-      return false unless permitted_attributes.include?(attribute)
+      return false unless attribute == :id || permitted_attributes.include?(attribute)
       true
     end
 
@@ -80,7 +80,7 @@ module ActiveData
     end
 
     def file_name
-      [@c.file_name] || @c.to_s.split('::').map(&:underscore)
+      [@c.file_name + '.json'] || (@c.to_s + '.json').split('::').map(&:underscore)
     end
   end
 end

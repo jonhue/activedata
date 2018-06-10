@@ -29,6 +29,25 @@ module ActiveData
         end
       end
 
+      def where(options = {})
+        select do |instance|
+          if options.is_a?(Hash)
+            options.each { |k, v| instance.send(k) == v }
+          else
+            a, operator, b = options.split(' ').map { |str| str.is_integer? ? str.to_i : instance.send(str) }
+            a.send(operator, b)
+          end
+        end
+      end
+
+      def find_by(options = {})
+        where(options).first
+      end
+
+      def find(param)
+        param.is_a?(Array) ? param.map { |id| find_by(id: id) } : find_by(id: param)
+      end
+
       def dataset
         @@dataset ||= Dataset.new(self.class)
       end
@@ -80,25 +99,6 @@ module ActiveData
 
     def destroyed?
       @destroyed
-    end
-
-    def where(options = {})
-      select do |instance|
-        if options.is_a?(Hash)
-          options.each { |k, v| instance.send(k) == v }
-        else
-          a, operator, b = options.split(' ').map { |str| str.is_integer? ? str.to_i : instance.send(str) }
-          a.send(operator, b)
-        end
-      end
-    end
-
-    def find_by(options = {})
-      where(options).first
-    end
-
-    def find(param)
-      param.is_a?(Array) ? param.map { |id| find_by(id: id) } : find_by(id: param)
     end
 
     private
