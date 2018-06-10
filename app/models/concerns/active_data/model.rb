@@ -7,6 +7,7 @@ module ActiveData
     include ActiveModel::Model
 
     include ActiveData::Callbacks
+    include ActiveData::Associations
 
     included do
       cattr_accessor :all, :dataset
