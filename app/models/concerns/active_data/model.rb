@@ -4,10 +4,11 @@ require 'active_model'
 module ActiveData
   class Model
     include ActiveSupport::Concern
+    include ActiveModel::Model
+
+    include ActiveData::Callbacks
 
     included do
-      include ActiveModel::Model
-
       cattr_accessor :all, :dataset
       attr_accessor :id
 
@@ -17,8 +18,14 @@ module ActiveData
     module ClassMethods
       def create(options = {})
         instance = self.class.new
+        return false unless instance.run_callbacks(:before_create, true)
         options.each { |k, v| instance.send(k) = v }
-        instance if instance.save
+        if instance.save
+          instance.run_callbacks(:after_create)
+          instance
+        else
+          nil
+        end
       end
 
       def dataset
@@ -31,13 +38,26 @@ module ActiveData
     end
 
     def save
-      valid? ? self.class.dataset.write(self) : false
+      return false unless run_callbacks(:before_save, true)
+      if valid?
+        self.class.dataset.write(self)
+        run_callbacks(:after_save)
+        self
+      else
+        false
+      end
     end
 
     def update(options = {})
+      return false unless run_callbacks(:before_update, true)
       fallback = self
       options.each { |k, v| send(k) = v }
-      save ? self : fallback
+      if save
+        run_callbacks(:after_update)
+        self
+      else
+        fallback
+      end
     end
 
     def update_attributes(options = {})
@@ -49,7 +69,11 @@ module ActiveData
     end
 
     def destroy
-      @destroyed = true if self.class.dataset.remove(self)
+      return false unless run_callbacks(:before_destroy, true)
+      if self.class.dataset.remove(self)
+        @destroyed = true
+        run_callbacks(:after_destroy)
+      end
       self
     end
 
