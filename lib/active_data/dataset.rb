@@ -42,7 +42,7 @@ module ActiveData
           object = data[instance.id - 1]
         end
       end
-      self.class.active_data_config[:permit_attributes].each { |attribute| object[attribute] = instance.send(attribute) }
+      permitted_attributes.each { |attribute| object[attribute] = instance.send(attribute) }
       write_data(data)
     end
 
