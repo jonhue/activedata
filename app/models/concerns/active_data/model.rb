@@ -11,12 +11,20 @@ module ActiveData
 
     included do
       cattr_accessor :all, :dataset
+      cattr_reader :active_data_config
       attr_accessor :id
 
       include ClassMethods
     end
 
     module ClassMethods
+      def active_data(options = {})
+        @@active_data_config = {}
+        @@active_data_config[:file_name] = options[:file_name]
+        @@active_data_config[:json_scope] = options[:json_scope]
+        @@active_data_config[:permit_attributes] = options[:permit_attributes]
+      end
+
       def create(options = {})
         instance = self.class.new
         return false unless instance.run_callbacks(:before_create, true)
