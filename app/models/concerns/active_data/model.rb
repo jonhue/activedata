@@ -10,7 +10,7 @@ module ActiveData
     include ActiveData::Associations
 
     included do
-      cattr_accessor :all
+      cattr_accessor :all, :abstract_class
       cattr_reader :active_data_config
       attr_accessor :id
 
