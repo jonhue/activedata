@@ -44,7 +44,7 @@ module ActiveData
     end
 
     def has_many_association?(m)
-      @@has_many.any? { |association| association[:name] == m }
+      @@has_many&.any? { |association| association[:name] == m }
     end
 
     def belongs_to_association(name)
@@ -57,7 +57,7 @@ module ActiveData
     end
 
     def belongs_to_association?(m)
-      @@belongs_to.any? { |association| association[:name] == m }
+      @@belongs_to&.any? { |association| association[:name] == m }
     end
   end
 end
