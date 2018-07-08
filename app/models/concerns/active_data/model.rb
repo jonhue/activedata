@@ -19,6 +19,7 @@ module ActiveData
 
     module ClassMethods
       def active_data(options = {})
+        abstract_class = false
         @@active_data_config = {}
         @@active_data_config[:file_name] = options[:file_name]
         @@active_data_config[:json_scope] = options[:json_scope]
