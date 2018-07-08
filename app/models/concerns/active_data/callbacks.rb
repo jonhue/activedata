@@ -15,35 +15,35 @@ module ActiveData
 
     module ClassMethods
       def before_save(m)
-        add_callback(@@before_save_callbacks, m)
+        add_callback(:before_save_callbacks, m)
       end
 
       def after_save(m)
-        add_callback(@@after_save_callbacks, m)
+        add_callback(:after_save_callbacks, m)
       end
 
       def before_create(m)
-        add_callback(@@before_create_callbacks, m)
+        add_callback(:before_create_callbacks, m)
       end
 
       def after_create(m)
-        add_callback(@@after_create_callbacks, m)
+        add_callback(:after_create_callbacks, m)
       end
 
       def before_update(m)
-        add_callback(@@before_update_callbacks, m)
+        add_callback(:before_update_callbacks, m)
       end
 
       def after_update(m)
-        add_callback(@@after_update_callbacks, m)
+        add_callback(:after_update_callbacks, m)
       end
 
       def before_destroy(m)
-        add_callback(@@before_destroy_callbacks, m)
+        add_callback(:before_destroy_callbacks, m)
       end
 
       def after_destroy(m)
-        add_callback(@@after_destroy_callbacks, m)
+        add_callback(:after_destroy_callbacks, m)
       end
     end
 
@@ -58,9 +58,11 @@ module ActiveData
 
     private
 
-    def add_callback(method_names, method_name)
+    def add_callback(method_names_method, method_name)
+      method_names = send(method_names_method)
       method_names ||= []
       method_names << method_name unless method_names.include?(method_name)
+      send("#{method_names_method}=", method_names)
     end
   end
 end
