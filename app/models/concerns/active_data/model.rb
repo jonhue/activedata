@@ -20,7 +20,7 @@ module ActiveData
       def create(options = {})
         instance = self.class.new
         return false unless instance.run_callbacks(:before_create, true)
-        options.each { |k, v| instance.send(k) = v }
+        options.each { |k, v| instance.send("#{k}=", v) }
         if instance.save
           instance.run_callbacks(:after_create)
           instance
