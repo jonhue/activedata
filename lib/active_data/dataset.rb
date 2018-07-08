@@ -15,7 +15,7 @@ module ActiveData
       instances = []
       data.each_with_index do |object, index|
         object.each { |k, v| delete(k) unless attribute_permitted?(k) }
-        object[:id] = index unless object.key?(:id)
+        object[:id] = index + 1 unless object.key?(:id)
         instances << @c.new(object)
       end
       instances
@@ -33,7 +33,7 @@ module ActiveData
       data = read_data
       if instance.id.nil?
         object = {}
-        object[:id] = data.length if instance.class.explicit_ids?
+        object[:id] = data.length + 1 if instance.class.explicit_ids?
         data.push(object)
       else
         if instance.class.explicit_ids?
