@@ -57,7 +57,7 @@ module ActiveData
       end
 
       def dataset
-        @@dataset ||= Dataset.new(self.class)
+        @@dataset ||= ActiveData::Dataset.new(self.class)
       end
 
       def explicit_ids?
