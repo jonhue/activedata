@@ -71,7 +71,7 @@ module ActiveData
     def update(options = {})
       return false unless run_callbacks(:before_update, true)
       fallback = self
-      options.each { |k, v| send(k) = v }
+      options.each { |k, v| send("#{k}=", v) }
       if save
         run_callbacks(:after_update)
         self
