@@ -54,7 +54,7 @@ module ActiveData
       end
     end
 
-    def run_callbacks(callback, abort_with_false = false)
+    def exec_callbacks(callback, abort_with_false = false)
       valid = true
       self.class.send("#{callback}_callbacks")&.each do |m|
         valid = send(m)
