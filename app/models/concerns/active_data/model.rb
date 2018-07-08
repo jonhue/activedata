@@ -10,8 +10,7 @@ module ActiveData
     include ActiveData::Associations
 
     included do
-      cattr_accessor :abstract_class
-      cattr_writer :all
+      cattr_accessor :all, :abstract_class
       cattr_reader :active_data_config
       attr_accessor :id
 
@@ -55,10 +54,6 @@ module ActiveData
 
       def find(param)
         param.is_a?(Array) ? param.map { |id| find_by(id: id) } : find_by(id: param)
-      end
-
-      def all
-        @@all || []
       end
 
       def dataset
