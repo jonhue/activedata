@@ -35,6 +35,7 @@ module ActiveData
         object = {}
         instance.id = object[:id] = data.length + 1 if instance.class.explicit_ids?
         data.push(object)
+        instance.class.all << instance
       else
         if instance.class.explicit_ids?
           object = data.select { |obj| obj[:id] == instance.id }.first
