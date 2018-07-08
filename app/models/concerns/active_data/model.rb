@@ -61,7 +61,7 @@ module ActiveData
       end
 
       def explicit_ids?
-        self.explicit_ids || self.explicit_ids.nil?
+        active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
       end
     end
 
