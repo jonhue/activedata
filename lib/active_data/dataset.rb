@@ -24,8 +24,8 @@ module ActiveData
     def read_data
       file = File.open(file_path)
       file_data = JSON.parse(file.read).deep_symbolize_keys
-      return file_data unless @c.json_scope
-      @c.json_scope.call(file_data)
+      return file_data unless @c.active_data_config[:json_scope]
+      @c.active_data_config[:json_scope].call(file_data)
     end
 
     def write(instance)
@@ -41,7 +41,7 @@ module ActiveData
           object = data[instance.id - 1]
         end
       end
-      self.class.permit_attributes.each { |attribute| object[attribute] = instance.send(attribute) }
+      self.class.active_data_config[:permit_attributes].each { |attribute| object[attribute] = instance.send(attribute) }
       write_data(data)
     end
 
@@ -66,8 +66,8 @@ module ActiveData
     private
 
     def permitted_attributes
-      return [] unless @c.permit_attributes
-      @c.permit_attributes
+      return [] unless @c.active_data_config[:permit_attributes]
+      @c.active_data_config[:permit_attributes]
     end
 
     def attribute_permitted?(attribute)
@@ -80,7 +80,7 @@ module ActiveData
     end
 
     def file_name
-      [@c.file_name + '.json'] || (@c.to_s + '.json').split('::').map(&:underscore)
+      [@c.active_data_config[:file_name] + '.json'] || (@c.to_s + '.json').split('::').map(&:underscore)
     end
   end
 end
