@@ -21,9 +21,10 @@ Active Data aims to implement the same functionality as Active Record without us
 ```ruby
 class Example < ApplicationData
   active_data(
-    file_name: 'example_data' # uses /data/example_data.json; if omitted would use /data/example.json
-    json_scope: lambda { |data| data[:examples] } # if omitted would use data, result has to return a JSON array
-    permit_attributes: :foo, :bar # should only contain attribute names that have getter and setter methods
+    file_name: 'example_data', # uses /data/example_data.json; if omitted would use /data/example.json
+    json_scope: lambda { |data| data[:examples] }, # if omitted would use data, result has to return a JSON array
+    permit_attributes: [:foo, :bar], # should only contain attribute names that have getter and setter methods
+    explicit_ids: true # if false, does not store id's of instances in JSON
   )
 
   attr_accessor :foo, :bar
