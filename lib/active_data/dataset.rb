@@ -33,7 +33,7 @@ module ActiveData
       data = read_data
       if instance.id.nil?
         object = {}
-        object[:id] = data.length + 1 if instance.class.explicit_ids?
+        instance.id = object[:id] = data.length + 1 if instance.class.explicit_ids?
         data.push(object)
       else
         if instance.class.explicit_ids?
