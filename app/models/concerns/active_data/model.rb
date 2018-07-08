@@ -27,10 +27,10 @@ module ActiveData
 
       def create(options = {})
         instance = self.class.new
-        return false unless instance.run_callbacks(:before_create, true)
+        return false unless instance.exec_callbacks(:before_create, true)
         options.each { |k, v| instance.send("#{k}=", v) }
         if instance.save
-          instance.run_callbacks(:after_create)
+          instance.exec_callbacks(:after_create)
           instance
         else
           nil
@@ -66,10 +66,10 @@ module ActiveData
     end
 
     def save
-      return false unless run_callbacks(:before_save, true)
+      return false unless exec_callbacks(:before_save, true)
       if valid?
         self.class.dataset.write(self)
-        run_callbacks(:after_save)
+        exec_callbacks(:after_save)
         self
       else
         false
@@ -77,11 +77,11 @@ module ActiveData
     end
 
     def update(options = {})
-      return false unless run_callbacks(:before_update, true)
+      return false unless exec_callbacks(:before_update, true)
       fallback = self
       options.each { |k, v| send("#{k}=", v) }
       if save
-        run_callbacks(:after_update)
+        exec_callbacks(:after_update)
         self
       else
         fallback
@@ -97,10 +97,10 @@ module ActiveData
     end
 
     def destroy
-      return false unless run_callbacks(:before_destroy, true)
+      return false unless exec_callbacks(:before_destroy, true)
       if self.class.dataset.remove(self)
         @destroyed = true
-        run_callbacks(:after_destroy)
+        exec_callbacks(:after_destroy)
       end
       self
     end
