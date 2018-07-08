@@ -76,7 +76,7 @@ module ActiveData
     end
 
     def file_path
-      Rails.root.join(file_name.unshift('data'))
+      Rails.root.join(*file_name.unshift('data'))
     end
 
     def file_name
