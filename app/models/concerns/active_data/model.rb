@@ -2,7 +2,7 @@ require 'active_support'
 require 'active_model'
 
 module ActiveData
-  class Model
+  module Model
     extend ActiveSupport::Concern
     include ActiveModel::Model
 

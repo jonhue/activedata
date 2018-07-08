@@ -1,7 +1,7 @@
 require 'active_support'
 
 module ActiveData
-  class Associations
+  module Associations
     extend ActiveSupport::Concern
 
     included do
