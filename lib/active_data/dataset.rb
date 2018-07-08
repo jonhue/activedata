@@ -80,7 +80,8 @@ module ActiveData
     end
 
     def file_name
-      [@c.active_data_config[:file_name] + '.json'] || (@c.to_s + '.json').split('::').map(&:underscore)
+      return [@c.active_data_config[:file_name] + '.json'] unless @c.active_data_config[:file_name].nil?
+      (@c.to_s + '.json').split('::').map(&:underscore)
     end
   end
 end
