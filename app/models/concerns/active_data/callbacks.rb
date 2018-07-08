@@ -2,7 +2,7 @@ require 'active_support'
 
 module ActiveData
   class Callbacks
-    include ActiveSupport::Concern
+    extend ActiveSupport::Concern
 
     included do
       cattr_accessor :before_save, :after_save,

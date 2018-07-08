@@ -3,7 +3,7 @@ require 'active_model'
 
 module ActiveData
   class Model
-    include ActiveSupport::Concern
+    extend ActiveSupport::Concern
     include ActiveModel::Model
 
     include ActiveData::Callbacks
