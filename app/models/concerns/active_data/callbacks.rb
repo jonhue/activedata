@@ -1,7 +1,7 @@
 require 'active_support'
 
 module ActiveData
-  class Callbacks
+  module Callbacks
     extend ActiveSupport::Concern
 
     included do
