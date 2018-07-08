@@ -2,7 +2,7 @@ require 'active_support'
 
 module ActiveData
   class Associations
-    include ActiveSupport::Concern
+    extend ActiveSupport::Concern
 
     included do
       cattr_accessor :has_many, :belongs_to
