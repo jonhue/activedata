@@ -10,7 +10,7 @@ module ActiveData
     include ActiveData::Associations
 
     included do
-      cattr_accessor :all, :abstract_class
+      cattr_accessor :all
       cattr_reader :active_data_config
       attr_accessor :id
 
@@ -19,7 +19,6 @@ module ActiveData
 
     module ClassMethods
       def active_data(options = {})
-        abstract_class = false
         @@active_data_config = {}
         @@active_data_config[:file_name] = options[:file_name]
         @@active_data_config[:json_scope] = options[:json_scope]
@@ -63,6 +62,10 @@ module ActiveData
 
       def explicit_ids?
         active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
+      end
+
+      def abstract_class?
+        !dataset.has_data_file?
       end
     end
 
