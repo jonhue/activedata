@@ -14,7 +14,7 @@ module ActiveData
     def load_data(data)
       instances = []
       data.each_with_index do |object, index|
-        object.each { |k, v| delete(k) unless v.nil? || attribute_permitted?(k) }
+        object.each { |k, v| delete(k) unless !v.nil? && attribute_permitted?(k) }
         object[:id] = index + 1 unless object.key?(:id)
         instances << @c.new(object)
       end
