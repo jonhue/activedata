@@ -59,7 +59,7 @@ module ActiveData
       end
 
       def all
-        ObjectSpace.each_object(self).to_a.reverse
+        ObjectSpace.each_object(self).to_a.sort_by { |instance| instance.id }
       end
 
       def first
