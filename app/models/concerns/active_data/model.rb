@@ -23,6 +23,8 @@ module ActiveData
         @@active_data_config[:file_name] = options[:file_name]
         @@active_data_config[:json_scope] = options[:json_scope]
         @@active_data_config[:permit_attributes] = options[:permit_attributes]
+        @@active_data_config[:explicit_ids] = options[:explicit_ids]
+        @@active_data_config[:explicit_nulls] = options[:explicit_nulls]
       end
 
       def create(options = {})
@@ -61,6 +63,10 @@ module ActiveData
       end
 
       def explicit_ids?
+        active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
+      end
+
+      def explicit_nulls?
         active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
       end
     end
