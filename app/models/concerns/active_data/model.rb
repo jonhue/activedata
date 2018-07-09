@@ -65,7 +65,7 @@ module ActiveData
       end
 
       def abstract_class?
-        !dataset.has_data_file?
+        dataset.c.name != name
       end
     end
 
