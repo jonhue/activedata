@@ -58,7 +58,7 @@ module ActiveData
       end
 
       def all
-        ObjectSpace.each_object(self)
+        ObjectSpace.each_object(self).to_a
       end
 
       def first
