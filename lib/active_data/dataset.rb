@@ -16,9 +16,8 @@ module ActiveData
       data.each_with_index do |object, index|
         object.each { |k, v| object.delete(k) unless !v.nil? && attribute_permitted?(k) }
         object[:id] = index + 1 unless object.key?(:id)
-        instances << @c.new(object)
+        @c.new(object)
       end
-      instances
     end
 
     def read_data
@@ -35,7 +34,6 @@ module ActiveData
         object = {}
         instance.id = object[:id] = data.length + 1 if instance.class.explicit_ids?
         data.push(object)
-        instance.class.all << instance
       else
         if instance.class.explicit_ids?
           object = data.select { |obj| obj[:id] == instance.id }.first
