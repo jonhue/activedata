@@ -22,7 +22,7 @@ module ActiveData
     end
 
     def read_data
-      File.open(file_path, 'w') { |f| f.write('[]') } unless has_data_file?
+      File.open(file_path, 'w') { |f| f.write('[]') } unless file_path.file?
       file = File.open(file_path)
       file_data = JSON.parse(file.read).map(&:deep_symbolize_keys)
       return file_data unless @c.active_data_config[:json_scope]
@@ -63,10 +63,6 @@ module ActiveData
         f.write(data.to_json)
       end
       true
-    end
-
-    def has_data_file?
-      file_path.file?
     end
 
     private
