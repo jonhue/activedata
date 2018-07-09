@@ -5,20 +5,20 @@ module ActiveData
     extend ActiveSupport::Concern
 
     included do
-      cattr_accessor :has_many, :belongs_to
+      cattr_accessor :has_many_associations, :belongs_to_associations
 
       include ClassMethods
     end
 
     module ClassMethods
       def has_many(name, options = {})
-        @@has_many ||= []
-        @@has_many << { name: name.to_sym, options: options }
+        @@has_many_associations ||= []
+        @@has_many_associations << { name: name.to_sym, options: options }
       end
 
       def belongs_to(name, options = {})
-        @@belongs_to ||= []
-        @@belongs_to << { name: name.to_sym, options: options }
+        @@belongs_to_associations ||= []
+        @@belongs_to_associations << { name: name.to_sym, options: options }
       end
     end
 
@@ -39,7 +39,7 @@ module ActiveData
     private
 
     def has_many_association(name)
-      options = @@has_many.select { |association| association[:name] == m }.first[:options]
+      options = self.class.has_many_associations.select { |association| association[:name] == m }.first[:options]
       if options.key?(:class_name)
         options[:class_name].constantize.where("#{options[:foreign_key] || self.class.name + '_id'}": id)
       else
@@ -48,11 +48,11 @@ module ActiveData
     end
 
     def has_many_association?(m)
-      self.class.has_many&.any? { |association| association[:name] == m }
+      self.class.has_many_associations&.any? { |association| association[:name] == m }
     end
 
     def belongs_to_association(name)
-      options = @@belongs_to.select { |association| association[:name] == m }.first[:options]
+      options = self.class.belongs_to_associations.select { |association| association[:name] == m }.first[:options]
       if options.key?(:class_name)
         options[:class_name].constantize.find(send(options[:foreign_key] || name + '_id'))
       else
@@ -61,7 +61,7 @@ module ActiveData
     end
 
     def belongs_to_association?(m)
-      self.class.belongs_to&.any? { |association| association[:name] == m }
+      self.class.belongs_to_associations&.any? { |association| association[:name] == m }
     end
   end
 end
