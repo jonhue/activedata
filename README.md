@@ -25,9 +25,16 @@ class Example < ApplicationData
     json_scope: lambda { |data| data[:examples] }, # if omitted would use data, result has to return a JSON array
     permit_attributes: [:foo, :bar], # should only contain attribute names that have getter and setter methods
     explicit_ids: false, # if false, does not store id's of objects in JSON
-    explicit_nulls: false # if false, does not store attributes whose values are null in JSON
+    explicit_nulls: false, # if false, does not store attributes whose values are null in JSON
+    delay_loading: true # if true, does not load data when the app starts.
   )
 
   attr_accessor :foo, :bar
 end
+```
+
+To manually load data for a class:
+
+```
+Example.dataset.load
 ```
