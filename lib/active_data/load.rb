@@ -8,7 +8,7 @@ module ActiveData
 
     def perform
       @classes&.each do |c|
-        c.all = Dataset.new(c).load
+        Dataset.new(c).load
       end
     end
   end
