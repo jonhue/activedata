@@ -6,16 +6,20 @@ module ActiveData
 
     included do
       cattr_accessor :has_many, :belongs_to
+
+      include ClassMethods
     end
 
-    def has_many(name, options = {})
-      @@has_many ||= []
-      @@has_many << { name: name.to_sym, options: options }
-    end
+    module ClassMethods
+      def has_many(name, options = {})
+        @@has_many ||= []
+        @@has_many << { name: name.to_sym, options: options }
+      end
 
-    def belongs_to(name, options = {})
-      @@belongs_to ||= []
-      @@belongs_to << { name: name.to_sym, options: options }
+      def belongs_to(name, options = {})
+        @@belongs_to ||= []
+        @@belongs_to << { name: name.to_sym, options: options }
+      end
     end
 
     def method_missing m, *args
