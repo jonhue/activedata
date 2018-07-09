@@ -42,10 +42,10 @@ module ActiveData
       def where(options = {})
         all.select do |instance|
           if options.is_a?(Hash)
-            options.each { |k, v| instance.send(k) == v }
+            !options.map { |k, v| instance.send(k) == v }.any?(false)
           else
             a, operator, b = options.split(' ').map { |str| str.is_integer? ? str.to_i : instance.send(str) }
-            a.send(operator, b)
+            send(a).send(operator, b)
           end
         end
       end
