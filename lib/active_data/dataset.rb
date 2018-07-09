@@ -14,7 +14,7 @@ module ActiveData
     def load_data(data)
       instances = []
       data.each_with_index do |object, index|
-        object.each { |k, v| delete(k) unless attribute_permitted?(k) }
+        object.each { |k, v| delete(k) unless v.nil? || attribute_permitted?(k) }
         object[:id] = index + 1 unless object.key?(:id)
         instances << @c.new(object)
       end
@@ -43,7 +43,13 @@ module ActiveData
           object = data[instance.id - 1]
         end
       end
-      permitted_attributes.each { |attribute| object[attribute] = instance.send(attribute) }
+      permitted_attributes.each do |attribute|
+        if instance.class.explicit_nulls?
+          object[attribute] = instance.send(attribute)
+        else
+          object[attribute] = instance.send(attribute) unless instance.send(attribute).nil?
+        end
+      end
       write_data(data)
     end
 
