@@ -24,6 +24,7 @@ module ActiveData
         @@active_data_config[:permit_attributes] = options[:permit_attributes]
         @@active_data_config[:explicit_ids] = options[:explicit_ids]
         @@active_data_config[:explicit_nulls] = options[:explicit_nulls]
+        @@active_data_config[:delay_loading] = options[:delay_loading]
       end
 
       def create(options = {})
@@ -83,6 +84,10 @@ module ActiveData
 
       def explicit_nulls?
         active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
+      end
+
+      def delay_loading?
+        active_data_config[:delay_loading]
       end
     end
 
