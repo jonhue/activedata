@@ -59,7 +59,7 @@ module ActiveData
       end
 
       def all
-        ObjectSpace.each_object(self).to_a.sort_by { |instance| instance.id }
+        ObjectSpace.each_object(self).to_a.select { |instance| !instance.id.nil? }.sort_by { |instance| instance.id }
       end
 
       def first
