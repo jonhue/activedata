@@ -19,6 +19,8 @@ module ActiveData
       def belongs_to(name, options = {})
         @@belongs_to_associations ||= {}
         @@belongs_to_associations[name.to_sym] = options
+        add_attribute("#{options[:foreign_key] || name}_id")
+        add_attribute("#{options[:foreign_key] || name}_type") if options[:polymorphic]
       end
     end
 
@@ -38,14 +40,19 @@ module ActiveData
 
     private
 
+    def add_attribute(name)
+      attr_accessor name.to_sym
+      @@active_data_config[:permit_attributes] << name.to_sym
+    end
+
     def has_many_association(name)
       options = self.class.has_many_associations[m.to_sym]
       if options[:as]
-        send(options[:as] + '_type').constantize.where("#{options[:as] + '_id'}": id)
+        send("#{options[:as]}_type").constantize.where("#{options[:as]}_id": id)
       elsif options[:class_name]
-        options[:class_name].constantize.where("#{options[:foreign_key] || self.class.name.underscore + '_id'}": id)
+        options[:class_name].constantize.where("#{options[:foreign_key] || self.class.name.underscore}_id": id)
       else
-        name.camelize.constantize.where("#{options[:foreign_key] || self.class.name.underscore + '_id'}": id)
+        name.camelize.constantize.where("#{options[:foreign_key] || self.class.name.underscore}_id": id)
       end
     end
 
@@ -56,11 +63,11 @@ module ActiveData
     def belongs_to_association(name)
       options = self.class.belongs_to_associations[m.to_sym]
       if options[:polymorphic]
-        send(options[:foreign_key] || name + '_type').constantize.find(send(options[:foreign_key] || name + '_id'))
+        send("#{options[:foreign_key] || name}_type").constantize.find(send("#{options[:foreign_key] || name}_id"))
       elsif options[:class_name]
-        options[:class_name].constantize.find(send(options[:foreign_key] || name + '_id'))
+        options[:class_name].constantize.find(send("#{options[:foreign_key] || name}_id"))
       else
-        name.camelize.constantize.find(send(options[:foreign_key] || name + '_id'))
+        name.camelize.constantize.find(send("#{options[:foreign_key] || name}_id"))
       end
     end
 
