@@ -40,7 +40,7 @@ module ActiveData
       end
 
       def where(options = {})
-        select do |instance|
+        all.select do |instance|
           if options.is_a?(Hash)
             options.each { |k, v| instance.send(k) == v }
           else
