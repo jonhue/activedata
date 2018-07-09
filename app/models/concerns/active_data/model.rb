@@ -63,10 +63,6 @@ module ActiveData
       def explicit_ids?
         active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
       end
-
-      def abstract_class?
-        dataset.c.name != name
-      end
     end
 
     def save

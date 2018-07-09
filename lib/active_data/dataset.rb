@@ -3,8 +3,6 @@ require 'active_support'
 
 module ActiveData
   class Dataset
-    attr_reader :c
-
     def initialize(c)
       @c = c
     end
