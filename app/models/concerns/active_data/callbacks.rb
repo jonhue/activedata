@@ -46,11 +46,15 @@ module ActiveData
         add_callback(:after_destroy_callbacks, m)
       end
 
-      def add_callback(method_names_method, method_name)
-        method_names = send(method_names_method)
-        method_names ||= []
-        method_names << method_name unless method_names.include?(method_name)
-        send("#{method_names_method}=", method_names)
+      class << self
+        private
+
+        def add_callback(method_names_method, method_name)
+          method_names = send(method_names_method)
+          method_names ||= []
+          method_names << method_name unless method_names.include?(method_name)
+          send("#{method_names_method}=", method_names)
+        end
       end
     end
 

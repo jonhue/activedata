@@ -22,6 +22,15 @@ module ActiveData
         add_attribute("#{options[:foreign_key] || name}_id")
         add_attribute("#{options[:foreign_key] || name}_type") if options[:polymorphic]
       end
+
+      class << self
+        private
+
+        def add_attribute(name)
+          attr_accessor name.to_sym
+          @@active_data_config[:permit_attributes] << name.to_sym
+        end
+      end
     end
 
     def method_missing m, *args
@@ -39,11 +48,6 @@ module ActiveData
     end
 
     private
-
-    def add_attribute(name)
-      attr_accessor name.to_sym
-      @@active_data_config[:permit_attributes] << name.to_sym
-    end
 
     def has_many_association(name)
       options = self.class.has_many_associations[m.to_sym]
