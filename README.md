@@ -37,5 +37,5 @@ end
 To manually load data for a class:
 
 ```
-Example.dataset.load
+Example::DATASET.load
 ```
