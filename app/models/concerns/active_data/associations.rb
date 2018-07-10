@@ -19,13 +19,8 @@ module ActiveData
       def belongs_to(name, options = {})
         @@belongs_to_associations ||= {}
         @@belongs_to_associations[name.to_sym] = options
-        add_attribute("#{options[:foreign_key] || name}_id")
-        add_attribute("#{options[:foreign_key] || name}_type") if options[:polymorphic]
-      end
-
-      def add_attribute(name)
-        attr_accessor name.to_sym
-        @@active_data_config[:permit_attributes] << name.to_sym
+        attr_accessor :"#{options[:foreign_key] || name}_id"
+        attr_accessor :"#{options[:foreign_key] || name}_type" if options[:polymorphic]
       end
     end
 
