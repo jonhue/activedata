@@ -7,7 +7,7 @@ module ActiveData
       ActiveSupport.on_load :active_data do
         if defined?(ApplicationData)
           ApplicationData.descendants&.each do |c|
-            c.dataset.load unless c.delay_loading?
+            c::DATASET.load unless c.delay_loading?
           end
         end
       end

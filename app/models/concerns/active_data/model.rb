@@ -10,6 +10,8 @@ module ActiveData
     include ActiveData::Associations
 
     included do
+      DATASET = ActiveData::Dataset.new(self)
+
       cattr_reader :active_data_config
       attr_accessor :id
 
@@ -68,10 +70,6 @@ module ActiveData
         all&.count || 0
       end
 
-      def dataset
-        @@dataset ||= ActiveData::Dataset.new(self)
-      end
-
       def explicit_ids?
         active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
       end
@@ -92,7 +90,7 @@ module ActiveData
     def save
       return false unless exec_callbacks(:before_save, true)
       if valid?
-        self.class.dataset.write(self)
+        self.class::DATASET.write(self)
         exec_callbacks(:after_save)
         self
       else
@@ -122,7 +120,7 @@ module ActiveData
 
     def destroy
       return false unless exec_callbacks(:before_destroy, true)
-      if self.class.dataset.remove(self)
+      if self.class::DATASET.remove(self)
         @destroyed = true
         exec_callbacks(:after_destroy)
       end
