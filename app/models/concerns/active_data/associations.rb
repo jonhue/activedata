@@ -23,13 +23,9 @@ module ActiveData
         add_attribute("#{options[:foreign_key] || name}_type") if options[:polymorphic]
       end
 
-      class << self
-        private
-
-        def add_attribute(name)
-          attr_accessor name.to_sym
-          @@active_data_config[:permit_attributes] << name.to_sym
-        end
+      def add_attribute(name)
+        attr_accessor name.to_sym
+        @@active_data_config[:permit_attributes] << name.to_sym
       end
     end
 
