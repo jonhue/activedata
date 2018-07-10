@@ -63,6 +63,7 @@ module ActiveData
     end
 
     def write_data(data)
+      return false if @c.prohibit_writes?
       File.open(file_path, 'w') do |f|
         f.write(data.to_json)
       end
