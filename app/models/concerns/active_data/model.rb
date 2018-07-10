@@ -18,13 +18,7 @@ module ActiveData
 
     module ClassMethods
       def active_data(options = {})
-        @@active_data_config = {}
-        @@active_data_config[:file_name] = options[:file_name]
-        @@active_data_config[:json_scope] = options[:json_scope]
-        @@active_data_config[:permit_attributes] = options[:permit_attributes]
-        @@active_data_config[:explicit_ids] = options[:explicit_ids]
-        @@active_data_config[:explicit_nulls] = options[:explicit_nulls]
-        @@active_data_config[:delay_loading] = options[:delay_loading]
+        @@active_data_config = options
       end
 
       def create(options = {})
@@ -88,6 +82,10 @@ module ActiveData
 
       def delay_loading?
         active_data_config[:delay_loading]
+      end
+
+      def prohibit_writes?
+        active_data_config[:prohibit_writes]
       end
     end
 

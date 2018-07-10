@@ -26,7 +26,8 @@ class Example < ApplicationData
     permit_attributes: [:foo, :bar], # should only contain attribute names that have getter and setter methods
     explicit_ids: false, # if false, does not store id's of objects in JSON
     explicit_nulls: false, # if false, does not store attributes whose values are null in JSON
-    delay_loading: true # if true, does not load data when the app starts.
+    delay_loading: true, # if true, does not load data when the app starts.
+    prohibit_writes: true # if true, does not allow writing operations.
   )
 
   attr_accessor :foo, :bar
