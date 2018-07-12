@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
                                   'app/**/*']
   gem.require_paths         = ['lib']
 
-  gem.required_ruby_version = '>= 2.0'
+  gem.required_ruby_version = '>= 2.2.2'
 
   gem.add_dependency 'activemodel', '>= 5.0'
   gem.add_dependency 'activesupport', '>= 5.0'
