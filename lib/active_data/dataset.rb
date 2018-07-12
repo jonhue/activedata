@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'active_support'
 
 module ActiveData
   class Dataset
-    def initialize(c)
-      @c = c
+    def initialize(klass)
+      @klass = klass
     end
 
     def load
@@ -12,11 +14,12 @@ module ActiveData
     end
 
     def load_data(data)
-      instances = []
       data.each_with_index do |object, index|
-        object.each { |k, v| object.delete(k) unless !v.nil? && attribute_permitted?(k) }
+        object.each do |k, v|
+          object.delete(k) unless !v.nil? && attribute_permitted?(k)
+        end
         object[:id] = index + 1 unless object.key?(:id)
-        @c.new(object)
+        @klass.new(object)
       end
     end
 
@@ -24,28 +27,30 @@ module ActiveData
       File.open(file_path, 'w') { |f| f.write('[]') } unless file_path.file?
       file = File.open(file_path)
       file_data = JSON.parse(file.read).map(&:deep_symbolize_keys)
-      return file_data unless @c.active_data_config[:json_scope]
-      @c.active_data_config[:json_scope].call(file_data)
+      return file_data unless @klass.active_data_config[:json_scope]
+      @klass.active_data_config[:json_scope].call(file_data)
     end
 
     def write(instance)
       data = read_data
       if instance.id.nil?
         object = {}
-        instance.id = object[:id] = data.length + 1 if instance.class.explicit_ids?
-        data.push(object)
-      else
         if instance.class.explicit_ids?
-          object = data.select { |obj| obj[:id] == instance.id }.first
-        else
-          object = data[instance.id - 1]
+          instance.id = object[:id] = data.length + 1
         end
+        data.push(object)
+      elsif instance.class.explicit_ids?
+        object = data.select { |obj| obj[:id] == instance.id }.first
+      else
+        object = data[instance.id - 1]
       end
       permitted_attributes.each do |attribute|
         if instance.class.explicit_nulls?
           object[attribute] = instance.send(attribute)
         else
-          object[attribute] = instance.send(attribute) unless instance.send(attribute).nil?
+          unless instance.send(attribute).nil?
+            object[attribute] = instance.send(attribute)
+          end
         end
       end
       write_data(data)
@@ -63,7 +68,7 @@ module ActiveData
     end
 
     def write_data(data)
-      return false if @c.prohibit_writes?
+      return false if @klass.prohibit_writes?
       File.open(file_path, 'w') do |f|
         f.write(data.to_json)
       end
@@ -73,12 +78,14 @@ module ActiveData
     private
 
     def permitted_attributes
-      return [] unless @c.active_data_config[:permit_attributes]
-      @c.active_data_config[:permit_attributes]
+      return [] unless @klass.active_data_config[:permit_attributes]
+      @klass.active_data_config[:permit_attributes]
     end
 
     def attribute_permitted?(attribute)
-      return false unless attribute == :id || permitted_attributes.include?(attribute)
+      unless attribute == :id || permitted_attributes.include?(attribute)
+        return false
+      end
       true
     end
 
@@ -87,8 +94,10 @@ module ActiveData
     end
 
     def file_name
-      return [@c.active_data_config[:file_name] + '.json'] unless @c.active_data_config[:file_name].nil?
-      (@c.to_s + '.json').split('::').map(&:underscore)
+      unless @klass.active_data_config[:file_name].nil?
+        return [@klass.active_data_config[:file_name] + '.json']
+      end
+      (@klass.to_s + '.json').split('::').map(&:underscore)
     end
   end
 end

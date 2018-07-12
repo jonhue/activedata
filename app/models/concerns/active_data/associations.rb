@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 module ActiveData
@@ -20,22 +22,24 @@ module ActiveData
         @@belongs_to_associations ||= {}
         @@belongs_to_associations[name.to_sym] = options
         attr_accessor :"#{options[:foreign_key] || name}_id"
-        attr_accessor :"#{options[:foreign_key] || name}_type" if options[:polymorphic]
+        if options[:polymorphic]
+          attr_accessor :"#{options[:foreign_key] || name}_type"
+        end
       end
     end
 
-    def method_missing m, *args
-      if has_many_association?(m)
-        has_many_association(m)
-      elsif belongs_to_association?(m)
-        belongs_to_association(m)
+    def method_missing(method, *args)
+      if has_many_association?(method)
+        has_many_association(method)
+      elsif belongs_to_association?(method)
+        belongs_to_association(method)
       else
         super
       end
     end
 
-    def respond_to? m, include_private = false
-      super || association?(m)
+    def respond_to_missing?(method, include_private = false)
+      super || association?(method)
     end
 
     private
@@ -45,29 +49,39 @@ module ActiveData
       if options[:as]
         send("#{options[:as]}_type").constantize.where("#{options[:as]}_id": id)
       elsif options[:class_name]
-        options[:class_name].constantize.where("#{options[:foreign_key] || self.class.name.underscore}_id": id)
+        options[:class_name].constantize.where(
+          "#{options[:foreign_key] || self.class.name.underscore}_id": id
+        )
       else
-        name.camelize.constantize.where("#{options[:foreign_key] || self.class.name.underscore}_id": id)
+        name.camelize.constantize.where(
+          "#{options[:foreign_key] || self.class.name.underscore}_id": id
+        )
       end
     end
 
-    def has_many_association?(m)
-      self.class.has_many_associations&.key?(m.to_sym)
+    def has_many_association?(method)
+      self.class.has_many_associations&.key?(method.to_sym)
     end
 
     def belongs_to_association(name)
       options = self.class.belongs_to_associations[m.to_sym]
       if options[:polymorphic]
-        send("#{options[:foreign_key] || name}_type").constantize.find(send("#{options[:foreign_key] || name}_id"))
+        send("#{options[:foreign_key] || name}_type").constantize.find(
+          send("#{options[:foreign_key] || name}_id")
+        )
       elsif options[:class_name]
-        options[:class_name].constantize.find(send("#{options[:foreign_key] || name}_id"))
+        options[:class_name].constantize.find(
+          send("#{options[:foreign_key] || name}_id")
+        )
       else
-        name.camelize.constantize.find(send("#{options[:foreign_key] || name}_id"))
+        name.camelize.constantize.find(
+          send("#{options[:foreign_key] || name}_id")
+        )
       end
     end
 
-    def belongs_to_association?(m)
-      self.class.belongs_to_associations&.key?(m.to_sym)
+    def belongs_to_association?(method)
+      self.class.belongs_to_associations&.key?(method.to_sym)
     end
   end
 end

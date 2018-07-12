@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 
 module ActiveData
@@ -6,44 +8,44 @@ module ActiveData
 
     included do
       cattr_accessor :before_save_callbacks, :after_save_callbacks,
-        :before_create_callbacks, :after_create_callbacks,
-        :before_update_callbacks, :after_update_callbacks,
-        :before_destroy_callbacks, :after_destroy_callbacks
+                     :before_create_callbacks, :after_create_callbacks,
+                     :before_update_callbacks, :after_update_callbacks,
+                     :before_destroy_callbacks, :after_destroy_callbacks
 
       include ClassMethods
     end
 
     module ClassMethods
-      def before_save(m)
-        add_callback(:before_save_callbacks, m)
+      def before_save(method)
+        add_callback(:before_save_callbacks, method)
       end
 
-      def after_save(m)
-        add_callback(:after_save_callbacks, m)
+      def after_save(method)
+        add_callback(:after_save_callbacks, method)
       end
 
-      def before_create(m)
-        add_callback(:before_create_callbacks, m)
+      def before_create(method)
+        add_callback(:before_create_callbacks, method)
       end
 
-      def after_create(m)
-        add_callback(:after_create_callbacks, m)
+      def after_create(method)
+        add_callback(:after_create_callbacks, method)
       end
 
-      def before_update(m)
-        add_callback(:before_update_callbacks, m)
+      def before_update(method)
+        add_callback(:before_update_callbacks, method)
       end
 
-      def after_update(m)
-        add_callback(:after_update_callbacks, m)
+      def after_update(method)
+        add_callback(:after_update_callbacks, method)
       end
 
-      def before_destroy(m)
-        add_callback(:before_destroy_callbacks, m)
+      def before_destroy(method)
+        add_callback(:before_destroy_callbacks, method)
       end
 
-      def after_destroy(m)
-        add_callback(:after_destroy_callbacks, m)
+      def after_destroy(method)
+        add_callback(:after_destroy_callbacks, method)
       end
 
       def add_callback(method_names_method, method_name)
@@ -56,8 +58,8 @@ module ActiveData
 
     def exec_callbacks(callback, abort_with_false = false)
       valid = true
-      self.class.send("#{callback}_callbacks")&.each do |m|
-        valid = send(m)
+      self.class.send("#{callback}_callbacks")&.each do |method|
+        valid = send(method)
         break if valid == false && abort_with_false
       end
       valid

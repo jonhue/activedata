@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support'
 require 'active_model'
 
@@ -27,18 +29,19 @@ module ActiveData
         options.each { |k, v| instance.send("#{k}=", v) }
         if instance.save
           instance.exec_callbacks(:after_create)
-          instance
-        else
-          nil
+          return instance
         end
+        nil
       end
 
       def where(options = {})
         all.select do |instance|
           if options.is_a?(Hash)
-            !options.map { |k, v| instance.send(k) == v }.any?(false)
+            options.map { |k, v| instance.send(k) == v }.none?(false)
           else
-            a, operator, b = options.split(' ').map { |str| str.is_integer? ? str.to_i : instance.send(str) }
+            a, operator, b = options.split(' ').map do |str|
+              integer?(str) ? str.to_i : instance.send(str)
+            end
             send(a).send(operator, b)
           end
         end
@@ -49,11 +52,16 @@ module ActiveData
       end
 
       def find(param)
-        param.is_a?(Array) ? param.map { |id| find_by(id: id) } : find_by(id: param)
+        if param.is_a?(Array)
+          param.map { |id| find_by(id: id) }
+        else
+          find_by(id: param)
+        end
       end
 
       def all
-        ObjectSpace.each_object(self).to_a.select { |instance| !instance.id.nil? }.sort_by { |instance| instance.id }
+        ObjectSpace.each_object(self).to_a
+                   .reject { |instance| instance.id.nil? }.sort_by(&:id)
       end
 
       def first
@@ -73,11 +81,13 @@ module ActiveData
       end
 
       def explicit_ids?
-        active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
+        active_data_config[:explicit_ids] ||
+          active_data_config[:explicit_ids].nil?
       end
 
       def explicit_nulls?
-        active_data_config[:explicit_ids] || active_data_config[:explicit_ids].nil?
+        active_data_config[:explicit_ids] ||
+          active_data_config[:explicit_ids].nil?
       end
 
       def delay_loading?
@@ -135,7 +145,7 @@ module ActiveData
 
     private
 
-    def is_integer?(str)
+    def integer?(str)
       str.to_i.to_s == str
     end
   end
