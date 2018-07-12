@@ -15,16 +15,11 @@ module ActiveData
       attr_accessor :id
 
       @active_data_config = {}
-      @dataset = nil
 
       include ClassMethods
     end
 
     module ClassMethods
-      def active_data_config
-        @active_data_config
-      end
-
       def dataset
         @dataset ||= ActiveData::Dataset.new(self)
       end
@@ -87,21 +82,21 @@ module ActiveData
       end
 
       def explicit_ids?
-        active_data_config[:explicit_ids] ||
-          active_data_config[:explicit_ids].nil?
+        @active_data_config[:explicit_ids] ||
+          @active_data_config[:explicit_ids].nil?
       end
 
       def explicit_nulls?
-        active_data_config[:explicit_ids] ||
-          active_data_config[:explicit_ids].nil?
+        @active_data_config[:explicit_ids] ||
+          @active_data_config[:explicit_ids].nil?
       end
 
       def delay_loading?
-        active_data_config[:delay_loading]
+        @active_data_config[:delay_loading]
       end
 
       def prohibit_writes?
-        active_data_config[:prohibit_writes]
+        @active_data_config[:prohibit_writes]
       end
     end
 
