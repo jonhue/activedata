@@ -13,10 +13,12 @@ module ActiveData
     end
 
     module ClassMethods
+      # rubocop:disable Naming/PredicateName
       def has_many(name, options = {})
         @@has_many_associations ||= {}
         @@has_many_associations[name.to_sym] = options
       end
+      # rubocop:enable Naming/PredicateName
 
       def belongs_to(name, options = {})
         @@belongs_to_associations ||= {}
@@ -44,8 +46,9 @@ module ActiveData
 
     private
 
+    # rubocop:disable Naming/PredicateName
     def has_many_association(name)
-      options = self.class.has_many_associations[m.to_sym]
+      options = self.class.has_many_associations[name.to_sym]
       if options[:as]
         send("#{options[:as]}_type").constantize.where("#{options[:as]}_id": id)
       elsif options[:class_name]
@@ -58,26 +61,33 @@ module ActiveData
         )
       end
     end
+    # rubocop:enable Naming/PredicateName
 
     def has_many_association?(method)
       self.class.has_many_associations&.key?(method.to_sym)
     end
 
     def belongs_to_association(name)
-      options = self.class.belongs_to_associations[m.to_sym]
+      options = self.class.belongs_to_associations[name.to_sym]
       if options[:polymorphic]
-        send("#{options[:foreign_key] || name}_type").constantize.find(
-          send("#{options[:foreign_key] || name}_id")
-        )
+        belongs_to_polymorphic_association(options[:foreign_key] || name)
       elsif options[:class_name]
-        options[:class_name].constantize.find(
-          send("#{options[:foreign_key] || name}_id")
+        belongs_to_association_with_custom_class_name(
+          options[:class_name],
+          options[:foreign_key] || name
         )
       else
-        name.camelize.constantize.find(
-          send("#{options[:foreign_key] || name}_id")
-        )
+        foreign_key = options[:foreign_key] || name
+        name.camelize.constantize.find(send("#{foreign_key}_id"))
       end
+    end
+
+    def belongs_to_polymorphic_association(foreign_key)
+      send("#{foreign_key}_type").constantize.find(send("#{foreign_key}_id"))
+    end
+
+    def belongs_to_association_with_custom_class_name(class_name, foreign_key)
+      class_name.constantize.find(send("#{foreign_key}_id"))
     end
 
     def belongs_to_association?(method)

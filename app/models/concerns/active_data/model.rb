@@ -12,15 +12,25 @@ module ActiveData
     include ActiveData::Associations
 
     included do
-      cattr_reader :active_data_config
       attr_accessor :id
+
+      @active_data_config = {}
+      @dataset = nil
 
       include ClassMethods
     end
 
     module ClassMethods
+      def active_data_config
+        @active_data_config
+      end
+
+      def dataset
+        @dataset ||= ActiveData::Dataset.new(self)
+      end
+
       def active_data(options = {})
-        @@active_data_config = options
+        @active_data_config = options
       end
 
       def create(options = {})
@@ -74,10 +84,6 @@ module ActiveData
 
       def count
         all&.count || 0
-      end
-
-      def dataset
-        @@dataset ||= ActiveData::Dataset.new(self)
       end
 
       def explicit_ids?
