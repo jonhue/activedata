@@ -7,6 +7,7 @@ module ActiveData
     initializer 'activedata.load' do
       ActiveSupport.on_load :active_data do
         if defined?(ApplicationData)
+          Rails.application.eager_load!
           ApplicationData.descendants&.each do |klass|
             klass.dataset.load unless klass.delay_loading?
           end

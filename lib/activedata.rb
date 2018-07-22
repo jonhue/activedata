@@ -11,3 +11,5 @@ module ActiveData
   require 'active_data/railtie'
   require 'active_data/engine'
 end
+
+ActiveSupport.run_load_hooks(:active_data, ActiveData)
