@@ -5,3 +5,5 @@ module ActiveData
     include ActiveData::Model
   end
 end
+
+ActiveSupport.run_load_hooks(:active_data, ActiveData::Base)
