@@ -7,14 +7,12 @@ module ActiveData
     extend ActiveSupport::Concern
 
     included do
-      cattr_reader :has_many_associations, :belongs_to_associations
-
-      @has_many_associations = {}
-      @belongs_to_associations = {}
-
       class << self
         attr_accessor :has_many_associations, :belongs_to_associations
       end
+
+      @has_many_associations = {}
+      @belongs_to_associations = {}
 
       include ClassMethods
     end
