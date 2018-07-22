@@ -25,9 +25,6 @@ module ActiveData
         attr_accessor :dataset, :configuration
       end
 
-      @dataset = ActiveData::Dataset.new(self)
-      @configuration = DEFAULT_CONFIG
-
       def self.active_data(options = {})
         configuration = configuration.merge(options)
       end
@@ -84,56 +81,59 @@ module ActiveData
       def self.count
         all&.count || 0
       end
+    end
 
-      def save
-        return false unless exec_callbacks(:before_save, true)
-        if valid?
-          self.class.dataset.write(self)
-          exec_callbacks(:after_save)
-          self
-        else
-          false
-        end
-      end
+    @dataset = ActiveData::Dataset.new(self)
+    @configuration = DEFAULT_CONFIG
 
-      def update(options = {})
-        return false unless exec_callbacks(:before_update, true)
-        fallback = self
-        options.each { |k, v| send("#{k}=", v) }
-        if save
-          exec_callbacks(:after_update)
-          self
-        else
-          fallback
-        end
-      end
-
-      def update_attributes(options = {})
-        update(options)
-      end
-
-      def update_attribute(attribute, value)
-        update("#{attribute}": value)
-      end
-
-      def destroy
-        return false unless exec_callbacks(:before_destroy, true)
-        if self.class.dataset.remove(self)
-          @destroyed = true
-          exec_callbacks(:after_destroy)
-        end
+    def save
+      return false unless exec_callbacks(:before_save, true)
+      if valid?
+        self.class.dataset.write(self)
+        exec_callbacks(:after_save)
         self
+      else
+        false
       end
+    end
 
-      def destroyed?
-        @destroyed
+    def update(options = {})
+      return false unless exec_callbacks(:before_update, true)
+      fallback = self
+      options.each { |k, v| send("#{k}=", v) }
+      if save
+        exec_callbacks(:after_update)
+        self
+      else
+        fallback
       end
+    end
 
-      private
+    def update_attributes(options = {})
+      update(options)
+    end
 
-      def integer?(str)
-        str.to_i.to_s == str
+    def update_attribute(attribute, value)
+      update("#{attribute}": value)
+    end
+
+    def destroy
+      return false unless exec_callbacks(:before_destroy, true)
+      if self.class.dataset.remove(self)
+        @destroyed = true
+        exec_callbacks(:after_destroy)
       end
+      self
+    end
+
+    def destroyed?
+      @destroyed
+    end
+
+    private
+
+    def integer?(str)
+      str.to_i.to_s == str
     end
   end
 end

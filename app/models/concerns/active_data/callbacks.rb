@@ -56,15 +56,15 @@ module ActiveData
           send("#{method_names_method}=", method_names)
         end
       end
+    end
 
-      def exec_callbacks(callback, abort_with_false = false)
-        valid = true
-        self.class.send("#{callback}_callbacks")&.each do |method|
-          valid = send(method)
-          break if valid == false && abort_with_false
-        end
-        valid
+    def exec_callbacks(callback, abort_with_false = false)
+      valid = true
+      self.class.send("#{callback}_callbacks")&.each do |method|
+        valid = send(method)
+        break if valid == false && abort_with_false
       end
+      valid
     end
   end
 end
