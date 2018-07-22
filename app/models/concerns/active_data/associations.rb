@@ -12,18 +12,22 @@ module ActiveData
       @has_many_associations = {}
       @belongs_to_associations = {}
 
+      class << self
+        attr_accessor :has_many_associations, :belongs_to_associations
+      end
+
       include ClassMethods
     end
 
     module ClassMethods
       # rubocop:disable Naming/PredicateName
       def has_many(name, options = {})
-        @has_many_associations[name.to_sym] = options
+        has_many_associations[name.to_sym] = options
       end
       # rubocop:enable Naming/PredicateName
 
       def belongs_to(name, options = {})
-        @belongs_to_associations[name.to_sym] = options
+        belongs_to_associations[name.to_sym] = options
         attr_accessor :"#{options[:foreign_key] || name}_id"
         return unless options[:polymorphic]
         attr_accessor :"#{options[:foreign_key] || name}_type"
